@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Usage: tools/clean_voice voice/in.(wav|mp3|m4a) [out.wav]
+# 1) finds every pause longer than 0.3 s (silencedetect) and cuts it down to 0.15 s,
+# 2) speeds the voice up 1.1x keeping the pitch (atempo),
+# 3) normalises loudness to -16 LUFS (two-pass loudnorm).
+# Default output: public/voice/<name>.wav   Env: SILENCE_DB (default -40dB)
+set -euo pipefail
+IN="${1:?usage: tools/clean_voice <input> [output.wav]}"
+NAME="$(basename "${IN%.*}")"
+OUT="${2:-public/voice/${NAME}.wav}"
+mkdir -p "$(dirname "$OUT")"
+TH="${SILENCE_DB:--40dB}"
+TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
+
+# Step 1: exact pause trimming. Keep 0.075 s of each long pause on both sides (= 0.15 s).
+ffmpeg -hide_banner -nostats -i "$IN" -af "silencedetect=n=${TH}:d=0.3" -f null - 2>"$TMP/sd.txt" || true
+DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$IN")
+python3 - "$TMP/sd.txt" "$DUR" > "$TMP/keep.txt" <<'PY'
+import re, sys
+txt = open(sys.argv[1]).read(); dur = float(sys.argv[2])
+starts = [float(x) for x in re.findall(r"silence_start: ([-0-9.]+)", txt)]
+ends = [float(x) for x in re.findall(r"silence_end: ([-0-9.]+)", txt)]
+if len(ends) < len(starts): ends.append(dur)
+keep, pos, H = [], 0.0, 0.075
+for s, e in zip(starts, ends):
+    s = max(0.0, s)
+    a = s + H if s > 0.01 else max(0.0, e - H)   # leading silence -> keep only 0.075 s
+    if e >= dur - 0.01:                           # trailing silence -> keep only 0.075 s
+        keep.append((pos, min(dur, a))); pos = dur; break
+    b = e - H
+    if a > pos: keep.append((pos, a))
+    pos = max(pos, b)
+if pos < dur: keep.append((pos, dur))
+for a, b in keep: print(f"{a:.4f} {b:.4f}")
+PY
+FILTER=""; N=0
+while read -r A B; do
+  FILTER+="[0:a]atrim=${A}:${B},asetpts=PTS-STARTPTS,afade=t=in:d=0.005,afade=t=out:st=$(python3 -c "print(max(0,$B-$A-0.005))"):d=0.005[s$N];"
+  N=$((N+1))
+done < "$TMP/keep.txt"
+LABELS=$(for ((i=0;i<N;i++)); do printf "[s%d]" $i; done)
+ffmpeg -hide_banner -loglevel error -y -i "$IN" -filter_complex "${FILTER}${LABELS}concat=n=${N}:v=0:a=1,aresample=48000,aformat=channel_layouts=mono,atempo=1.1[o]" \
+  -map "[o]" -c:a pcm_s24le "$TMP/fast.wav"
+
+# Step 2: two-pass loudnorm to -16 LUFS, true peak -1.5 dB
+STATS=$(ffmpeg -hide_banner -nostats -i "$TMP/fast.wav" -af "loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json" -f null - 2>&1 | sed -n '/^{/,/^}/p')
+read -r MI MTP MLRA MTH OFF < <(python3 -c 'import json,sys; d=json.loads(sys.stdin.read()); print(d["input_i"],d["input_tp"],d["input_lra"],d["input_thresh"],d["target_offset"])' <<<"$STATS")
+ffmpeg -hide_banner -loglevel error -y -i "$TMP/fast.wav" -af "loudnorm=I=-16:TP=-1.5:LRA=11:measured_I=${MI}:measured_TP=${MTP}:measured_LRA=${MLRA}:measured_thresh=${MTH}:offset=${OFF},aresample=48000" \
+  -ac 1 -c:a pcm_s16le "$OUT"
+
+D_OUT=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$OUT")
+LUFS=$(ffmpeg -hide_banner -nostats -i "$OUT" -af ebur128 -f null - 2>&1 | grep -A1 'Integrated loudness' | grep -oE '[-0-9.]+ LUFS' | tail -1)
+echo "clean_voice: $IN (${DUR}s, $((N-1)) long pauses cut) -> $OUT (${D_OUT}s, ${LUFS})"

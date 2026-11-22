@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Usage: tools/finish out/video.mp4 [out/video_final.mp4] [watermark.png]
+# 1) loudness to -14 LUFS integrated, true peak <= -1.5 dBTP: gain + 4x-oversampled limiter,
+#    re-measured and corrected up to 3 times until within 0.3 LU,
+# 2) overlays the watermark PNG at 30% opacity (top-left: clear of the bottom 300 px and right edge).
+# Video is re-encoded once (H.264 CRF 18, AAC 192k). Make the watermark: python3 tools/make_watermark.py @handle
+# Env: WM_OPACITY (0.3) WM_X (60) WM_Y (150) TARGET_LUFS (-14)
+set -euo pipefail
+IN="${1:?usage: tools/finish <in.mp4> [out.mp4] [watermark.png]}"
+OUT="${2:-${IN%.*}_final.mp4}"
+WM="${3:-public/watermark.png}"
+[ -f "$WM" ] || { echo "watermark not found: $WM (run tools/make_watermark.py @handle)"; exit 1; }
+OPACITY="${WM_OPACITY:-0.3}"; X="${WM_X:-60}"; Y="${WM_Y:-150}"; T="${TARGET_LUFS:--14}"
+TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
+
+measure() { # prints "I TP"
+  ffmpeg -hide_banner -nostats -i "$1" -vn -af ebur128=peak=true -f null - 2>&1 | awk '
+    /Integrated loudness:/ {s=1} s && /I:/ {i=$2} /True peak:/ {p=1} p && /Peak:/ {tp=$2} END {print i, tp}'
+}
+
+ffmpeg -hide_banner -loglevel error -y -i "$IN" -vn -ac 2 -ar 48000 -c:a pcm_f32le "$TMP/a0.wav"
+read -r I0 TP0 < <(measure "$TMP/a0.wav")
+GAIN=$(python3 -c "print($T - ($I0))")
+for PASS in 1 2 3; do
+  # limiter ceiling -1.8 dBFS at 192 kHz leaves margin for the true-peak target of -1.5
+  ffmpeg -hide_banner -loglevel error -y -i "$TMP/a0.wav" -af \
+    "volume=${GAIN}dB,aresample=192000,alimiter=limit=0.813:attack=1:release=60:level=false:asc=true,aresample=48000" \
+    -c:a pcm_f32le "$TMP/a1.wav"
+  read -r I1 TP1 < <(measure "$TMP/a1.wav")
+  echo "  pass $PASS: gain ${GAIN} dB -> ${I1} LUFS, TP ${TP1} dBFS"
+  OK=$(python3 -c "print(1 if abs($I1 - ($T)) <= 0.3 else 0)")
+  [ "$OK" = 1 ] && break
+  GAIN=$(python3 -c "print($GAIN + ($T) - ($I1))")
+done
+
+ffmpeg -hide_banner -loglevel error -y -i "$IN" -i "$WM" -i "$TMP/a1.wav" \
+  -filter_complex "[1:v]format=rgba,colorchannelmixer=aa=${OPACITY}[wm];[0:v][wm]overlay=${X}:${Y}:format=auto,format=yuv420p[v]" \
+  -map "[v]" -map 2:a -c:v libx264 -preset medium -crf 18 -c:a aac -b:a 192k -movflags +faststart -shortest "$OUT"
+read -r IF TPF < <(measure "$OUT")
+echo "finish: $IN (${I0} LUFS) -> $OUT (${IF} LUFS, true peak ${TPF} dBFS, watermark ${WM} @ ${OPACITY})"
