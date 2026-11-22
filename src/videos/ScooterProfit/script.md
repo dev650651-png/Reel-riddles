@@ -1,6 +1,10 @@
 # ScooterProfit: script (Part 1)
 
-- **Status:** script written, waiting for the voice file (put it in `voice/`). No audio generated.
+- **Status:** voice ready, video not built yet.
+  - `voice/scooter_profit.mp3`: ElevenLabs eleven_v4, voice "Rohit - Calm Hindi Storyteller", 42.6 s.
+  - `public/voice/scooter_profit.wav`: after `tools/clean_voice`, 36.4 s, -16.2 LUFS, so the video is 38.4 s with the 2 s tail.
+  - `public/words.json`: Whisper small, `--script voice.txt`. 108/108 words timed: 104 heard, 4 estimated (`"est": true`;
+    दिया, नौ, सी, दो were merged by Whisper into the next word).
 - **Reference:** none (`refs/` does not exist), so this is our own IDEA.
 - **IDEA:** a buy-sell-buy-sell profit puzzle. Pappu flips one old scooter four times at a Sunday bazaar. How much profit did he make in total?
 - **Voice language:** Hindi (Devanagari for ElevenLabs). On-screen text is Roman capitals only.

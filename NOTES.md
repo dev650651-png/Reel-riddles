@@ -12,6 +12,11 @@
   The "small" model (461 MB) downloads to ./models/whisper (git-ignored) on first use, about 1 min.
   Tested: 18/18 words correct on a test clip, 7 s of audio transcribed in about 13 s on CPU.
   If the host is blocked again, `tools/word_times.py` falls back to silencedetect LINE times.
+- word_times.py runs Whisper with condition_on_previous_text=False. Without it, Hindi transcription got stuck at 12 s of 36.
+  Always pass `--script src/videos/<name>/voice.txt`: each script word gets Whisper's time and the script's spelling.
+  Words Whisper merged get `"est": true` and a time inside the real gap around them.
+- ElevenLabs: the connector can generate speech (eleven_v4, voice Rohit 0Aun6zCvE1rNqDXMwV64). Downloads come from
+  elevenlabsusercontent.com, which is now allowed. Always estimate the cost first and ask before generating.
 - Environment: Default has package managers turned OFF, so its setup script (pip + npm) will fail in a new
   session until "Allow package managers" is ticked again. "Reels-riddle" (unrestricted network) works as is.
 
@@ -39,5 +44,5 @@ use at volume 0.1-0.3). public/music/loop.wav: 8 s, 120 BPM, seamless loop, peak
 
 ## Videos
 - **ScooterProfit** (src/videos/ScooterProfit/script.md): Hindi Part 1 riddle. Pappu buys and sells one scooter 4 times
-  (8K, 9K, 10K, 11K); how much profit? Answer C, RS 2,000 (kept for Part 2). Status: script done, waiting for
-  the voice file in voice/. Not registered in Root.tsx yet. No reference was given (refs/ missing), so the idea is our own.
+  (8K, 9K, 10K, 11K); how much profit? Answer C, RS 2,000 (kept for Part 2). Voice ready (36.4 s cleaned) and
+  public/words.json done; video not built and not registered in Root.tsx yet. No reference was given (refs/ missing), so the idea is our own.
