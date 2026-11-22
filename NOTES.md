@@ -36,3 +36,8 @@ use at volume 0.1-0.3). public/music/loop.wav: 8 s, 120 BPM, seamless loop, peak
   almost silent (e.g. the Test reel: one pop) cannot reach -14 within the true-peak limit; it stops at about -15.4.
 - `tools/clean_voice` lands within about 0.5 LU of -16 (tested: -16.5) because loudnorm respects the -1.5 dB true peak.
 - pip installed the CUDA build of torch (~5 GB); the CPU-only index (download.pytorch.org) is blocked here.
+
+## Videos
+- **ScooterProfit** (src/videos/ScooterProfit/script.md): Hindi Part 1 riddle. Pappu buys and sells one scooter 4 times
+  (8K, 9K, 10K, 11K); how much profit? Answer C, RS 2,000 (kept for Part 2). Status: script done, waiting for
+  the voice file in voice/. Not registered in Root.tsx yet. No reference was given (refs/ missing), so the idea is our own.
