@@ -59,4 +59,6 @@ use at volume 0.1-0.3). public/music/loop.wav: 8 s, 120 BPM, seamless loop, peak
   Timing snapshot: src/videos/ScooterProfit/words.json, a copy of public/words.json for this voice, so a new
   voice does not break this video. 10 scenes, hard cuts on संडे / पप्पू#2 / फिर / अगले / और / अब / ए / ध्यान / सही.
   QC fixes made: faces were covered by tags or chips in the hook, re-hook, options, stuck and outro scenes (camera lowered);
-  KITNA PROFIT? is now on screen from frame 0. Part 2 (the answer, C RS 2,000) is not made yet. No reference was given (refs/ missing), so the idea is our own.
+  KITNA PROFIT? is now on screen from frame 0. Part 2 = ScooterAnswer. No reference was given (refs/ missing), so the idea is our own.
+- **ScooterAnswer** (src/videos/ScooterAnswer/script.md): Part 2, reveals C RS 2,000 with two proofs. Script written;
+  voice not generated yet (estimate 605 credits). The next riddle is only teased ("इससे भी टेढ़ी पहेली"), nothing specific promised.
