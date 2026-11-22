@@ -8,9 +8,12 @@
 - Fonts: Poppins 700/800 in public/fonts, loaded by `src/lib/fonts.ts` (FontFace + delayRender/continueRender).
   Call `loadPoppins()` at the top of every video file. `outline()` gives the thick dark text stroke.
 - Timing helpers: `src/lib/words.ts` (`wordFrame`, `lineFrame`, `durationFromVoice`).
-- Whisper: model host `openaipublic.azureedge.net` is blocked -> `tools/word_times.py` falls back to
-  silencedetect LINE times (no word times). Allow that host under Network access to get word times.
-  Models are stored in ./models (git-ignored).
+- Whisper: `openaipublic.azureedge.net` is now allowed (saved as a network secret on the Default environment).
+  The "small" model (461 MB) downloads to ./models/whisper (git-ignored) on first use, about 1 min.
+  Tested: 18/18 words correct on a test clip, 7 s of audio transcribed in about 13 s on CPU.
+  If the host is blocked again, `tools/word_times.py` falls back to silencedetect LINE times.
+- Environment: Default has package managers turned OFF, so its setup script (pip + npm) will fail in a new
+  session until "Allow package managers" is ticked again. "Reels-riddle" (unrestricted network) works as is.
 
 ## Pipeline
 1. Voice arrives in `voice/`. `tools/clean_voice voice/ep1.wav` -> `public/voice/ep1.wav`
