@@ -4,13 +4,13 @@
 #    re-measured and corrected up to 3 times until within 0.3 LU,
 # 2) overlays the watermark PNG at 30% opacity (top-left: clear of the bottom 300 px and right edge).
 # Video is re-encoded once (H.264 CRF 18, AAC 192k). Make the watermark: python3 tools/make_watermark.py @handle
-# Env: WM_OPACITY (0.3) WM_X (60) WM_Y (150) TARGET_LUFS (-14)
+# Env: WM_OPACITY (0.3) WM_X (60) WM_Y (60, above the chips) TARGET_LUFS (-14)
 set -euo pipefail
 IN="${1:?usage: tools/finish <in.mp4> [out.mp4] [watermark.png]}"
 OUT="${2:-${IN%.*}_final.mp4}"
 WM="${3:-public/watermark.png}"
 [ -f "$WM" ] || { echo "watermark not found: $WM (run tools/make_watermark.py @handle)"; exit 1; }
-OPACITY="${WM_OPACITY:-0.3}"; X="${WM_X:-60}"; Y="${WM_Y:-150}"; T="${TARGET_LUFS:--14}"
+OPACITY="${WM_OPACITY:-0.3}"; X="${WM_X:-60}"; Y="${WM_Y:-60}"; T="${TARGET_LUFS:--14}"
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 
 measure() { # prints "I TP"

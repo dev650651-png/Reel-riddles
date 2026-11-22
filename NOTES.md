@@ -36,6 +36,16 @@
 public/sfx: whoosh pop ding tick click thud splash sparkle buzzer slam (48 kHz WAV, peaks about -1 dBFS;
 use at volume 0.1-0.3). public/music/loop.wav: 8 s, 120 BPM, seamless loop, peak -6 dBFS.
 
+## Shared building blocks (src/lib)
+- cartoon.tsx: Character (pappu / golu / auntie; poses: armF/armB, mouth, brows, look, tilt, hold notes/bag, sweat;
+  always breathing, blinking and swaying), Scooter, PriceTag, DroppingTag (gravity, bounce, squash, dust), Dust,
+  FlyingNotes, BazaarBack/Bunting/Ground/Foreground (back, middle and front layers).
+- ui.tsx: Chip (pop, slam, pulseAt, x for left-aligned), Tile (A-D), FollowButton (tap hand), Finish (vignette + grain),
+  layer() parallax camera, shake().
+- physics.ts: keys() keyframes, bounceHeight, fallTime, squash, rand.
+- Watermark: tools/finish puts it at y 60 (above all chips). public/watermark.png = @daily.riddles.12 (git-ignored).
+- Render time: about 2.5 min for 38 s.
+
 ## Known limits
 - `tools/finish` reaches -14 LUFS on normal voice+music mixes (tested: -14.1 LUFS, TP -1.8). A clip that is
   almost silent (e.g. the Test reel: one pop) cannot reach -14 within the true-peak limit; it stops at about -15.4.
@@ -44,5 +54,9 @@ use at volume 0.1-0.3). public/music/loop.wav: 8 s, 120 BPM, seamless loop, peak
 
 ## Videos
 - **ScooterProfit** (src/videos/ScooterProfit/script.md): Hindi Part 1 riddle. Pappu buys and sells one scooter 4 times
-  (8K, 9K, 10K, 11K); how much profit? Answer C, RS 2,000 (kept for Part 2). Voice ready (36.4 s cleaned) and
-  public/words.json done; video not built and not registered in Root.tsx yet. No reference was given (refs/ missing), so the idea is our own.
+  (8K, 9K, 10K, 11K); how much profit? Answer C, RS 2,000 (kept for Part 2). DONE: rendered and sent
+  (out/scooter_profit_final.mp4, 38.4 s, -14.0 LUFS, TP -1.8). Registered in Root.tsx as `ScooterProfit`.
+  Timing snapshot: src/videos/ScooterProfit/words.json, a copy of public/words.json for this voice, so a new
+  voice does not break this video. 10 scenes, hard cuts on संडे / पप्पू#2 / फिर / अगले / और / अब / ए / ध्यान / सही.
+  QC fixes made: faces were covered by tags or chips in the hook, re-hook, options, stuck and outro scenes (camera lowered);
+  KITNA PROFIT? is now on screen from frame 0. Part 2 (the answer, C RS 2,000) is not made yet. No reference was given (refs/ missing), so the idea is our own.
