@@ -1,6 +1,8 @@
 # ScooterAnswer: script (Part 2 of ScooterProfit)
 
-- **Status:** script written. Voice not generated yet (estimate: 605 credits, voice Rohit, eleven_v4).
+- **Status:** DONE. out/scooter_answer_final.mp4: 38.1 s, -14.1 LUFS, TP -1.7.
+  - Voice: voice/scooter_answer.mp3 (ElevenLabs eleven_v4, Rohit, 40.8 s, 605 credits). Cleaned: 36.1 s.
+  - Timings: 108/108 words (104 heard; ने, कमेंट, में, बताओ estimated inside real gaps).
 - **Job:** reveal the answer (C, RS 2,000), prove it two ways, kill the tempting "RS 1,000" mistake, tease the next riddle.
 - **Same cast and set:** Pappu, Golu Bhaiya, Auntie, the mint scooter, Sunday bazaar.
 - **Length:** 108 words, 9 lines. Expected about 36 s after clean_voice, plus a 2 s tail.

@@ -58,8 +58,8 @@ export const Chip: React.FC<{
 };
 
 /** A-D answer tile. */
-export const Tile: React.FC<{ t: number; fps: number; at: number; x: number; y: number; w: number; h: number; letter: string; text: string; color: string; wobble?: number }> = ({
-  t, fps, at, x, y, w, h, letter, text, color, wobble = 0,
+export const Tile: React.FC<{ t: number; fps: number; at: number; x: number; y: number; w: number; h: number; letter: string; text: string; color: string; wobble?: number; glow?: boolean; cross?: number }> = ({
+  t, fps, at, x, y, w, h, letter, text, color, wobble = 0, glow = false, cross = 0,
 }) => {
   if (t < at) return null;
   const p = pop(t, at, fps);
@@ -69,10 +69,19 @@ export const Tile: React.FC<{ t: number; fps: number; at: number; x: number; y: 
       style={{
         position: "absolute", left: x, top: y, width: w, height: h,
         transform: `scale(${p}) rotate(${wob}deg)`,
-        background: "#FFFFFF", border: `9px solid ${INK}`, borderRadius: 30, boxShadow: "0 12px 0 rgba(26,16,48,0.45)",
-        display: "flex", alignItems: "center", gap: 18, padding: "0 20px", boxSizing: "border-box",
+        background: glow ? "#C9F7D6" : "#FFFFFF", border: `9px solid ${INK}`, borderRadius: 30,
+        boxShadow: glow ? `0 12px 0 rgba(26,16,48,0.45), 0 0 ${40 + Math.sin(t * 8) * 14}px 14px rgba(46,204,113,0.85)` : "0 12px 0 rgba(26,16,48,0.45)",
+        display: "flex", alignItems: "center", gap: 18, padding: "0 20px", boxSizing: "border-box", opacity: cross > 0 ? 0.85 : 1,
       }}
     >
+      {cross > 0 && (
+        <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ position: "absolute", left: -9, top: -9, overflow: "visible" }}>
+          {[[[20, 15], [w - 20, h - 15]], [[w - 20, 15], [20, h - 15]]].map(([[x1, y1], [x2, y2]], i) => {
+            const q = Math.min(1, Math.max(0, cross * 2 - i));
+            return <line key={i} x1={x1} y1={y1} x2={x1 + (x2 - x1) * q} y2={y1 + (y2 - y1) * q} stroke="#E63946" strokeWidth={22} strokeLinecap="round" />;
+          })}
+        </svg>
+      )}
       <div style={{ width: h * 0.62, height: h * 0.62, borderRadius: "50%", background: color, border: `8px solid ${INK}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONT, fontWeight: 800, fontSize: h * 0.36, color: "#fff", ...outline(6), flexShrink: 0 }}>
         {letter}
       </div>

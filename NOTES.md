@@ -42,6 +42,9 @@ use at volume 0.1-0.3). public/music/loop.wav: 8 s, 120 BPM, seamless loop, peak
   FlyingNotes, BazaarBack/Bunting/Ground/Foreground (back, middle and front layers).
 - ui.tsx: Chip (pop, slam, pulseAt, x for left-aligned), Tile (A-D), FollowButton (tap hand), Finish (vignette + grain),
   layer() parallax camera, shake().
+- scene.tsx: World (shared bazaar with parallax layers), makeW (word lookup that throws if missing), makeMusicVol, GROUND.
+  New videos should use these instead of copying them (ScooterProfit still has its own copy).
+- Tile also takes glow (winner) and cross (0..1 red X).
 - physics.ts: keys() keyframes, bounceHeight, fallTime, squash, rand.
 - Watermark: tools/finish puts it at y 60 (above all chips). public/watermark.png = @daily.riddles.12 (git-ignored).
 - Render time: about 2.5 min for 38 s.
@@ -60,5 +63,9 @@ use at volume 0.1-0.3). public/music/loop.wav: 8 s, 120 BPM, seamless loop, peak
   voice does not break this video. 10 scenes, hard cuts on संडे / पप्पू#2 / फिर / अगले / और / अब / ए / ध्यान / सही.
   QC fixes made: faces were covered by tags or chips in the hook, re-hook, options, stuck and outro scenes (camera lowered);
   KITNA PROFIT? is now on screen from frame 0. Part 2 = ScooterAnswer. No reference was given (refs/ missing), so the idea is our own.
-- **ScooterAnswer** (src/videos/ScooterAnswer/script.md): Part 2, reveals C RS 2,000 with two proofs. Script written;
-  voice not generated yet (estimate 605 credits). The next riddle is only teased ("इससे भी टेढ़ी पहेली"), nothing specific promised.
+- **ScooterAnswer** (src/videos/ScooterAnswer/script.md): Part 2, reveals C RS 2,000 with two proofs. DONE: rendered and sent
+  (38.1 s, -14.1 LUFS). 9 scenes: hook (C glows, A/B/D crossed) / PAISE DIYE 18,000 / PAISE MILE 20,000 / 20,000-18,000 /
+  re-hook RUKO + -1,000 balloon / PEHLE HI GINA (balloon pops on गिन) / DO ALAG SAUDE +1,000 +1,000 / next-reel box / follow.
+  QC fixes: coin bursts flew across the face (now a low ground spray), tiles touched hair at frame 0, the balloon overlapped a chip,
+  COMMENT KARO touched hair, PAISE MILE was too near the right edge.
+  The next riddle is only teased ("इससे भी टेढ़ी पहेली"), nothing specific promised.
