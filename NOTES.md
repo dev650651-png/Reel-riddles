@@ -84,4 +84,7 @@ use at volume 0.1-0.3). public/music/loop.wav: 8 s, 120 BPM, seamless loop, peak
   Part 2 = MelaAnswer.
 - References: put reels in refs/ (refs/*.mp4 is git-ignored, so videos aren't committed). reel1.mp4 came in on main at the repo root.
 - **MelaAnswer** (src/videos/MelaAnswer/script.md): Part 2, reveals B with the timeline (turn at 4:50, Kaka at 5:00 sends him to
-  the mela, arrives at 8:20 before the 10:00 look). Voice ready (33.6 s cleaned, words.json done); video not built yet.
+  the mela, arrives at 8:20 before the 10:00 look). DONE: rendered and sent (35.6 s,
+  -14.0 LUFS). Reuses MelaBridge/BridgeWorld.tsx. A story clock (clock()/progress()) drives both the on-screen timer chip and
+  Pappu's bridge position, so 4:50, 5:00 and 8:20 are where the maths says. QC fixes: tiles over Pappu's hair in the hook,
+  thought bubble over Kaka's face, COMMENT KARO touching hair (cameras lowered, bubble moved).

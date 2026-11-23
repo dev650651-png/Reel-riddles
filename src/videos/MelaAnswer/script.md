@@ -1,6 +1,6 @@
 # MelaAnswer: script (Part 2 of MelaBridge)
 
-- **Status:** voice ready, video not built yet.
+- **Status:** DONE. out/mela_answer_final.mp4: 35.6 s, -14.0 LUFS, TP -1.8.
   - voice/mela_answer.mp3: eleven_v4, Rohit, 37.6 s, 571 credits. Cleaned: public/voice/mela_answer.wav, 33.6 s, -16.1 LUFS,
     so the video is 35.6 s with the 2 s tail.
   - words.json: 110/110 words (108 heard; पहुँच, पुल estimated). Snapshot in src/videos/MelaAnswer/words.json.
