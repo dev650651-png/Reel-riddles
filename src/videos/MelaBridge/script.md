@@ -1,6 +1,9 @@
 # MelaBridge: script (Part 1)
 
-- **Status:** script written, waiting for the voice file. No audio generated.
+- **Status:** voice ready, video not built yet.
+  - voice/mela_bridge.mp3: ElevenLabs eleven_v4, Rohit, 42.4 s, 578 credits.
+  - public/voice/mela_bridge.wav: cleaned, 35.4 s, -16.1 LUFS, so the video is 37.4 s with the 2 s tail.
+  - words.json: 110/110 words (107 heard; नदी, पलट, कर estimated inside real gaps). Snapshot in src/videos/MelaBridge/words.json.
 - **Reference:** refs/reel1.mp4 (from main: reel1.mp4; not committed). We take only the idea and the logic.
 - **Voice language:** Hindi (Devanagari for ElevenLabs). On-screen text is Roman capitals only.
 - **Handle:** @daily.riddles.12
