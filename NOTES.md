@@ -84,4 +84,4 @@ use at volume 0.1-0.3). public/music/loop.wav: 8 s, 120 BPM, seamless loop, peak
   Part 2 = MelaAnswer.
 - References: put reels in refs/ (refs/*.mp4 is git-ignored, so videos aren't committed). reel1.mp4 came in on main at the repo root.
 - **MelaAnswer** (src/videos/MelaAnswer/script.md): Part 2, reveals B with the timeline (turn at 4:50, Kaka at 5:00 sends him to
-  the mela, arrives at 8:20 before the 10:00 look). Script written; voice not generated yet (estimate 571 credits).
+  the mela, arrives at 8:20 before the 10:00 look). Voice ready (33.6 s cleaned, words.json done); video not built yet.
