@@ -15,16 +15,18 @@ export type Pose = {
   look?: [number, number]; // pupil direction -1..1
   tilt?: number; // head tilt degrees
   lean?: number; // body lean degrees
-  holdF?: "notes" | "bag" | null;
-  holdB?: "notes" | "bag" | null;
+  holdF?: "notes" | "bag" | "lathi" | null;
+  holdB?: "notes" | "bag" | "lathi" | null;
   sweat?: boolean;
+  whistle?: boolean;
 };
 
-type Kind = "pappu" | "golu" | "auntie";
+type Kind = "pappu" | "golu" | "auntie" | "kaka";
 const LOOK: Record<Kind, { skin: string; top: string; bottom: string; w: number; hair: string }> = {
   pappu: { skin: "#C98B5B", top: "#FFC233", bottom: "#F4F1E8", w: 250, hair: "#2B1B17" },
   golu: { skin: "#D9A06B", top: "#4FA8EC", bottom: "#3B4A6B", w: 320, hair: "#2B1B17" },
   auntie: { skin: "#B97A4F", top: "#E8457F", bottom: "#E8457F", w: 270, hair: "#1E1414" },
+  kaka: { skin: "#C68A5E", top: "#C2A46B", bottom: "#A88B55", w: 220, hair: "#EDEDED" },
 };
 
 const Arm: React.FC<{ x: number; angle: number; side: 1 | -1; color: string; skin: string; hold?: Pose["holdF"] }> = ({
@@ -42,6 +44,12 @@ const Arm: React.FC<{ x: number; angle: number; side: 1 | -1; color: string; ski
             <rect key={i} x={-48 + i * 6} y={-30 - i * 8} width={96} height={52} rx={6} fill="#7BD389" stroke={INK} strokeWidth={6} />
           ))}
           <circle cx={12} cy={-30} r={13} fill="#4DAA5E" stroke={INK} strokeWidth={4} />
+        </g>
+      )}
+      {hold === "lathi" && (
+        <g transform={`translate(0,${L}) rotate(${angle * side})`}>
+          <line x1={0} y1={-120} x2={0} y2={250} stroke={INK} strokeWidth={26} strokeLinecap="round" />
+          <line x1={0} y1={-120} x2={0} y2={250} stroke="#8B5A2B" strokeWidth={14} strokeLinecap="round" />
         </g>
       )}
       {hold === "bag" && (
@@ -151,6 +159,13 @@ export const Character: React.FC<{
           {kind === "pappu" &&
             [-70, -10, 50].map((cx, i) => <circle key={i} cx={cx} cy={-138} r={44} fill={k.hair} />)}
           {kind === "golu" && <path d="M -165 -40 Q -160 -175 0 -172 Q 160 -175 165 -40 Q 120 -110 0 -112 Q -120 -110 -165 -40 Z" fill={k.hair} stroke={INK} strokeWidth={SW} strokeLinejoin="round" />}
+          {kind === "kaka" && (
+            <g>
+              {[-1, 1].map((sd) => [0, 1, 2].map((j) => <circle key={`${sd}${j}`} cx={sd * (150 - j * 8)} cy={-60 + j * 34} r={34} fill={k.hair} stroke={INK} strokeWidth={6} />))}
+              <path d="M -150 -88 Q -150 -190 0 -192 Q 150 -190 150 -88 Q 80 -120 0 -118 Q -80 -120 -150 -88 Z" fill="#B39457" stroke={INK} strokeWidth={SW} strokeLinejoin="round" />
+              <rect x={-160} y={-100} width={320} height={26} rx={12} fill="#8C7343" stroke={INK} strokeWidth={6} />
+            </g>
+          )}
           {kind === "auntie" && <path d="M -168 10 Q -170 -170 0 -170 Q 170 -170 168 10 Q 150 -95 8 -112 L 0 -96 L -8 -112 Q -150 -95 -168 10 Z" fill={k.hair} stroke={INK} strokeWidth={SW} strokeLinejoin="round" />}
           {/* cheeks */}
           <circle cx={-98} cy={48} r={28} fill="#FF6B6B" opacity={0.3} />
@@ -169,7 +184,20 @@ export const Character: React.FC<{
           {kind === "auntie" && <circle cx={0} cy={-62} r={11} fill="#D7263D" />}
           <path d="M -6 18 Q 4 44 18 30" fill="none" stroke={INK} strokeWidth={8} strokeLinecap="round" />
           {kind === "golu" && <path d="M -88 52 Q -44 22 0 44 Q 44 22 88 52 Q 64 76 0 62 Q -64 76 -88 52 Z" fill={k.hair} stroke={INK} strokeWidth={6} strokeLinejoin="round" />}
-          <MouthShape m={pose.mouth ?? "smile"} y={kind === "golu" ? 78 : 62} />
+          {kind === "kaka" && (
+            <g>
+              <path d="M -100 52 Q -50 18 0 42 Q 50 18 100 52 Q 70 80 0 62 Q -70 80 -100 52 Z" fill="#F4F4F4" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
+              {[-58, 58].map((gx) => <circle key={gx} cx={gx} cy={-12} r={50} fill="rgba(200,230,255,0.18)" stroke={INK} strokeWidth={8} />)}
+              <line x1={-8} y1={-16} x2={8} y2={-16} stroke={INK} strokeWidth={8} />
+            </g>
+          )}
+          <MouthShape m={pose.mouth ?? "smile"} y={kind === "golu" || kind === "kaka" ? 78 : 62} />
+          {pose.whistle && (
+            <g transform={`translate(0,${(kind === "golu" || kind === "kaka" ? 78 : 62) + 20})`}>
+              <rect x={10} y={-16} width={78} height={34} rx={12} fill="#D7DCE3" stroke={INK} strokeWidth={6} />
+              <circle cx={70} cy={0} r={8} fill={INK} />
+            </g>
+          )}
           {pose.sweat && <path d="M 140 -90 Q 160 -50 140 -40 Q 120 -50 140 -90 Z" fill="#7FD3FF" stroke={INK} strokeWidth={5} />}
         </g>
         <Arm x={w / 2 - 18} angle={armF} side={1} color={k.top} skin={k.skin} hold={pose.holdF} />

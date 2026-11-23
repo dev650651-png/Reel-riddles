@@ -146,3 +146,21 @@ for k in range(16):
 mix = np.stack([L, R], 1)
 mix = mix / np.max(np.abs(mix)) * 0.5   # soft: peak about -6 dBFS
 save(os.path.join(ROOT, "music", "loop.wav"), mix)
+
+# ---- added for MelaBridge (own rng so the sounds above stay identical)
+rng2 = np.random.default_rng(11)
+# whistle: chowkidar's pea whistle, two short trilled blasts
+d = 0.75; tt = t(d)
+trill = 1 + 0.035 * np.sign(np.sin(2 * np.pi * 28 * tt))
+ph = 2 * np.pi * np.cumsum(2900 * trill) / SR
+w = np.sin(ph) + 0.25 * np.sin(2 * ph) + 0.08 * rng2.standard_normal(len(tt))
+gate = ((tt < 0.28) | ((tt > 0.36) & (tt < 0.72))).astype(float)
+gate = np.convolve(gate, np.ones(240) / 240, mode="same")
+save(os.path.join(ROOT, "sfx", "whistle.wav"), fade(norm(w * gate)))
+# creak: old wooden bridge creak (slow resonant scrape)
+d = 0.9; n = int(SR * d); tt = t(d)
+f = 180 + 60 * np.sin(2 * np.pi * 1.3 * tt)
+pulses = (np.sin(2 * np.pi * np.cumsum(f) / SR) > 0.97).astype(float)
+body = np.convolve(pulses, np.exp(-np.arange(400) / 60) * np.sin(np.arange(400) * 2 * np.pi * 420 / SR), mode="same")
+body = body + 0.15 * lowpass(rng2.standard_normal(n), 1500)
+save(os.path.join(ROOT, "sfx", "creak.wav"), fade(norm(body * np.sin(np.pi * tt / d) ** 0.5)))

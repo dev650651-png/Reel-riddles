@@ -1,6 +1,6 @@
 # MelaBridge: script (Part 1)
 
-- **Status:** voice ready, video not built yet.
+- **Status:** DONE. out/mela_bridge_final.mp4: 37.4 s, -14.0 LUFS, TP -1.6.
   - voice/mela_bridge.mp3: ElevenLabs eleven_v4, Rohit, 42.4 s, 578 credits.
   - public/voice/mela_bridge.wav: cleaned, 35.4 s, -16.1 LUFS, so the video is 37.4 s with the 2 s tail.
   - words.json: 110/110 words (107 heard; नदी, पलट, कर estimated inside real gaps). Snapshot in src/videos/MelaBridge/words.json.

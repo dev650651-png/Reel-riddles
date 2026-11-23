@@ -45,6 +45,8 @@ use at volume 0.1-0.3). public/music/loop.wav: 8 s, 120 BPM, seamless loop, peak
 - scene.tsx: World (shared bazaar with parallax layers), makeW (word lookup that throws if missing), makeMusicVol, GROUND.
   New videos should use these instead of copying them (ScooterProfit still has its own copy).
 - Tile also takes glow (winner) and cross (0..1 red X).
+- Character kind "kaka" (chowkidar: khaki, white hair and moustache, glasses, cap), hold "lathi", pose.whistle.
+- Sound pack: + whistle.wav, creak.wav (added at the end of tools/make_sfx.py with their own rng; the older sounds are unchanged).
 - physics.ts: keys() keyframes, bounceHeight, fallTime, squash, rand.
 - Watermark: tools/finish puts it at y 60 (above all chips). public/watermark.png = @daily.riddles.12 (git-ignored).
 - Render time: about 2.5 min for 38 s.
@@ -72,5 +74,12 @@ use at volume 0.1-0.3). public/music/loop.wav: 8 s, 120 BPM, seamless loop, peak
 - **MelaBridge** (src/videos/MelaBridge/script.md): Hindi Part 1, from reference refs/reel1.mp4 (prisoner + bridge + guard trick;
   we keep only the idea). Pappu must cross an 8-min closed bridge to the mela; Ramlal Kaka looks out every 5 min and sends anyone
   back the way they came. Answer B (turn toward Kaka just before 5 min), kept for Part 2. Fixes the reference's uniform and
-  timing flaws. Status: voice ready (35.4 s cleaned, words.json done); video not built yet. Needs new art: river, rope bridge, mela, chowki, Kaka.
+  timing flaws. DONE: rendered and sent (37.4 s, -14.0 LUFS).
+  New set in src/videos/MelaBridge/BridgeWorld.tsx: sky/hills, river, near bank with the CHOWKI hut (door + clock), a rope
+  bridge that sags under each person (deckY with loads) and drops planks when it breaks, the mela with a turning Ferris wheel.
+  Scenes: hook / wide + barrier / 8-min crossing / Kaka goes in, clock races, pops out / Golu sent back / run, crack /
+  A-D tiles / comment / answer box + follow.
+  QC fixes: camera too high (empty river, tiny people), so the bridge is lower and people on it are bigger (S_BRIDGE 0.8);
+  the arrow touched Kaka's face; the dashed route ran through Pappu's face; outro chip over hair; Kaka and Pappu cut at the edge.
+  Part 2 (answer B) is not made yet.
 - References: put reels in refs/ (refs/*.mp4 is git-ignored, so videos aren't committed). reel1.mp4 came in on main at the repo root.
